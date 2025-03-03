@@ -6,6 +6,7 @@ const button = document.querySelector(".search-button");
 const weatherIcon = document.querySelector(".weather-icon");
 const card = document.querySelector(".card");
 const textElements = document.querySelectorAll(".weather, .details, .city, .temp, .humidity, .wind, .humidity-details, .wind-details");
+const profileSection = document.querySelector(".profile-section");
 
 
 function updateBackground(weather) {
@@ -90,13 +91,45 @@ async function checkWeather(city) {
         document.querySelector(".error").style.display = "none";
     }
 }
+// For Github Profile
+let username="bhumika2101";
+async function checkProfile(username) {
+    const githubUrl = `https://api.github.com/users/${username}`;
+    const response = await fetch(githubUrl);
+    
+    if (response.status === 404) {
+        document.querySelector(".error").style.display = "block";
+        profileSection.style.display = "none";
+    } else {
+        const data = await response.json();
+        console.log(data);
+        
+        document.querySelector(".profile-name").innerHTML = data.name || data.login;
+        document.querySelector(".profile-pic").src = data.avatar_url;
+        document.querySelector(".profile-link").href = data.html_url;
+        document.querySelector(".profile-link").innerText = "View GitHub Profile";
+        
+        profileSection.style.display = "block";
+        document.querySelector(".error").style.display = "none";
+    }
+}
 
 button.addEventListener("click", () => {
-    checkWeather(search.value);
+    const inputValue = search.value.trim();
+    if (inputValue.toLowerCase() === "bhumi") {
+        checkProfile("bhumika2101"); 
+    } else {
+        checkWeather(inputValue);
+    }
 });
 
 search.addEventListener("keypress", (event) => {
     if (event.key === "Enter") {
-        checkWeather(search.value);
+        const inputValue = search.value.trim();
+        if (inputValue.toLowerCase() === "bhumi") {
+            checkProfile("bhumika2101"); 
+        } else {
+            checkWeather(inputValue);
+        }
     }
 });
